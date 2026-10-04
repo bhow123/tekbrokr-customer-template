@@ -1,0 +1,2 @@
+# Pin the core. Upgrade by changing this line and [core] version in tekbrokr.toml together.
+tekbrokr-enterprise @ git+https://github.com/ORG/tekbrokr-enterprise.git@v0.1.0

@@ -1,0 +1,50 @@
+# Customer configuration. Replace CUSTOMER_ID and swap each adapter for the customer's real one.
+# Secrets are written as ${ENV_VAR}; never put a literal secret in this file.
+
+[customer]
+id = "CUSTOMER_ID"
+
+[brand]
+name = "Customer Name"
+report_title = "Daily management report"
+
+[core]
+version = "0.1.0"          # must match the installed tekbrokr-enterprise major.minor
+
+# One block per source system. 'pseudonymise' lists fields replaced by keyed tokens before storage.
+[connectors.sales]
+adapter = "csv_folder"      # replace, e.g. "adapters.example_erp:ExampleErpConnector"
+path = "data/sample"
+date_column = "date"
+pseudonymise = ["customer_id"]
+
+[object_store]
+adapter = "local_fs"        # replace with the customer's cloud store adapter
+path = ".tekbrokr/raw"
+
+[warehouse]
+adapter = "sqlite"          # replace with the customer's warehouse adapter
+path = ".tekbrokr/warehouse.db"
+
+[auth]
+adapter = "static_token"    # replace with an OIDC/SAML adapter for real SSO
+[auth.tokens.admin]
+token = "${ADMIN_TOKEN}"
+user_id = "admin"
+roles = ["admin"]
+
+# KPIs: defined once, here. SQL returns one numeric column named value; the day is the single ? parameter.
+[kpis.revenue]
+label = "Revenue"
+definition = "Sum of 'amount' across all sales records for the day"
+sql = "SELECT SUM(json_extract(payload, '$.amount')) AS value FROM raw_records WHERE day = ?"
+
+[kpis.transactions]
+label = "Transactions"
+definition = "Count of sales records for the day"
+sql = "SELECT COUNT(*) AS value FROM raw_records WHERE day = ?"
+
+# Targets: direction 'min' = at least, 'max' = at most.
+[targets.revenue]
+value = 100
+direction = "min"
