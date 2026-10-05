@@ -18,6 +18,19 @@ path = "data/sample"
 date_column = "date"
 pseudonymise = ["customer_id"]
 
+# Example: any Airbyte source (needs: pip install "tekbrokr-enterprise[airbyte]"). See the core's docs/AIRBYTE.md.
+# [connectors.crm]
+# adapter = "airbyte"
+# source = "source-postgres"
+# streams = ["orders", "customers"]
+# snapshot_streams = ["customers"]
+# pseudonymise = ["customer_id"]
+# [connectors.crm.day_field]
+# orders = "created_at"
+# [connectors.crm.config]
+# host = "db.example.com"
+# password = "${CRM_DB_PASSWORD}"
+
 [object_store]
 adapter = "local_fs"        # replace with the customer's cloud store adapter
 path = ".tekbrokr/raw"
